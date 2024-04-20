@@ -4,7 +4,7 @@ InPaint is a web application that helps user remove graffiti on pictures.
 
 ## Frontend
 
-> [!TIPS]
+> [!TIP]
 > Please install [Node.js](https://nodejs.org/en/download/current) and [yarn](https://yarnpkg.com/getting-started/install) first.
 
 The source code of frontend is saved in `/app`, you should move to `/app` as below:
