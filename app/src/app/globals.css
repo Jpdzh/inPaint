@@ -15,6 +15,7 @@
   .font-mono {
     font-family: 'Cascadia Code', 'Noto Sans SC';
   }
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -36,4 +37,9 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+
+.react-img-editor-palette {
+  height: auto !important;
 }
