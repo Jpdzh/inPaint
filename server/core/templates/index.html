@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Inpainting</title>
+</head>
+<body>
+    <h1>Image Inpainting</h1>
+    <form action="/inpaint" method="post", enctype="multipart/form-data">
+        <label for="image1">Image 1:</label><br>
+        <input type="file" id="image1" name="image1" accept="image/*"><br><br>
+        <label for="image2">Image 2:</label><br>
+        <input type="file" id="image2" name="image2" accept="image/*"><br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
