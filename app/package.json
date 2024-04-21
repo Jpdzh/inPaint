@@ -16,6 +16,7 @@
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-img-editor": "^0.2.2",
     "use-file-picker": "^2.1.1"
   },
   "devDependencies": {
