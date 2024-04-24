@@ -33,9 +33,9 @@ export default function NavBar() {
 
       <NavbarContent justify='end'>
         <NavbarItem>
-          <Link href='/result' as={NextLink} isBlock>
+          {/* <Link href='/result' as={NextLink} isBlock>
             我的文件
-          </Link>
+          </Link> */}
         </NavbarItem>
         <NavbarItem>
           <ThemeChanger />

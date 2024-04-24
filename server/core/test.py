@@ -21,7 +21,6 @@ try:
 except:
     pass
 
-
 from guided_diffusion.script_util import (
     NUM_CLASSES,
     model_and_diffusion_defaults,
@@ -30,6 +29,7 @@ from guided_diffusion.script_util import (
     create_classifier,
     select_args,
 )  # noqa: E402
+
 
 def toU8(sample):
     if sample is None:
@@ -48,14 +48,13 @@ def main(conf: conf_mgt.Default_Conf):
 
     device = dist_util.dev(conf.get('device'))
 
-
-    model, diffusion = create_model_and_diffusion(
-        **select_args(conf, model_and_diffusion_defaults().keys()), conf=conf
-    )
+    model, diffusion = create_model_and_diffusion(**select_args(
+        conf,
+        model_and_diffusion_defaults().keys()),
+                                                  conf=conf)
     model.load_state_dict(
-        dist_util.load_state_dict(os.path.expanduser(
-            conf.model_path), map_location="cpu")
-    )
+        dist_util.load_state_dict(os.path.expanduser(conf.model_path),
+                                  map_location="cpu"))
     model.to(device)
     if conf.use_fp16:
         model.convert_to_fp16()
@@ -66,11 +65,11 @@ def main(conf: conf_mgt.Default_Conf):
     if conf.classifier_scale > 0 and conf.classifier_path:
         print("loading classifier...")
         classifier = create_classifier(
-            **select_args(conf, classifier_defaults().keys()))
+            **select_args(conf,
+                          classifier_defaults().keys()))
         classifier.load_state_dict(
-            dist_util.load_state_dict(os.path.expanduser(
-                conf.classifier_path), map_location="cpu")
-        )
+            dist_util.load_state_dict(os.path.expanduser(conf.classifier_path),
+                                      map_location="cpu"))
 
         classifier.to(device)
         if conf.classifier_use_fp16:
@@ -84,7 +83,8 @@ def main(conf: conf_mgt.Default_Conf):
                 logits = classifier(x_in, t)
                 log_probs = F.log_softmax(logits, dim=-1)
                 selected = log_probs[range(len(logits)), y.view(-1)]
-                return th.autograd.grad(selected.sum(), x_in)[0] * conf.classifier_scale
+                return th.autograd.grad(selected.sum(),
+                                        x_in)[0] * conf.classifier_scale
     else:
         cond_fn = None
 
@@ -121,39 +121,44 @@ def main(conf: conf_mgt.Default_Conf):
             classes = th.ones(batch_size, dtype=th.long, device=device)
             model_kwargs["y"] = classes * conf.cond_y
         else:
-            classes = th.randint(
-                low=0, high=NUM_CLASSES, size=(batch_size,), device=device
-            )
+            classes = th.randint(low=0,
+                                 high=NUM_CLASSES,
+                                 size=(batch_size, ),
+                                 device=device)
             model_kwargs["y"] = classes
 
-        sample_fn = (
-            diffusion.p_sample_loop if not conf.use_ddim else diffusion.ddim_sample_loop
-        )
+        sample_fn = (diffusion.p_sample_loop
+                     if not conf.use_ddim else diffusion.ddim_sample_loop)
 
-
-        result = sample_fn(
-            model_fn,
-            (batch_size, 3, conf.image_size, conf.image_size),
-            clip_denoised=conf.clip_denoised,
-            model_kwargs=model_kwargs,
-            cond_fn=cond_fn,
-            device=device,
-            progress=show_progress,
-            return_all=True,
-            conf=conf
-        )
+        result = sample_fn(model_fn,
+                           (batch_size, 3, conf.image_size, conf.image_size),
+                           clip_denoised=conf.clip_denoised,
+                           model_kwargs=model_kwargs,
+                           cond_fn=cond_fn,
+                           device=device,
+                           progress=show_progress,
+                           return_all=True,
+                           conf=conf)
         srs = toU8(result['sample'])
         gts = toU8(result['gt'])
-        lrs = toU8(result.get('gt') * model_kwargs.get('gt_keep_mask') + (-1) *
-                   th.ones_like(result.get('gt')) * (1 - model_kwargs.get('gt_keep_mask')))
+        lrs = toU8(
+            result.get('gt') * model_kwargs.get('gt_keep_mask') +
+            (-1) * th.ones_like(result.get('gt')) *
+            (1 - model_kwargs.get('gt_keep_mask')))
 
         gt_keep_masks = toU8((model_kwargs.get('gt_keep_mask') * 2 - 1))
 
-        conf.eval_imswrite(
-            srs=srs, gts=gts, lrs=lrs, gt_keep_masks=gt_keep_masks,
-            img_names=batch['GT_name'], dset=dset, name=eval_name, verify_same=False)
+        conf.eval_imswrite(srs=srs,
+                           gts=gts,
+                           lrs=lrs,
+                           gt_keep_masks=gt_keep_masks,
+                           img_names=batch['GT_name'],
+                           dset=dset,
+                           name=eval_name,
+                           verify_same=False)
 
     print("sampling complete")
+
 
 #
 # if __name__ == "__main__":
@@ -162,11 +167,13 @@ def main(conf: conf_mgt.Default_Conf):
 #     conf_arg.update(yamlread(conf_path))
 #     main(conf_arg)
 
+
 def image_to_base64(image_path):
     with open(image_path, 'rb') as image_file:
         image_data = image_file.read()
         base64_str = base64.b64encode(image_data).decode('utf-8')
     return base64_str
+
 
 def run_main(img_base64, mask_base64):
     print('run main hhh')
@@ -174,6 +181,7 @@ def run_main(img_base64, mask_base64):
     conf_arg = conf_mgt.conf_base.Default_Conf()
     conf_arg.update(yamlread(conf_path))
     main(conf_arg)
+
 
 if __name__ == "__main__":
     b1 = image_to_base64('0009.png')
