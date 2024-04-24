@@ -5,12 +5,9 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Button,
   Link,
-  Badge,
 } from "@nextui-org/react";
 import { ThemeChanger } from "../ThemeChanger";
-import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 

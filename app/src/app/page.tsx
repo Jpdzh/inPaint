@@ -6,14 +6,10 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  user,
-  useSelect,
 } from "@nextui-org/react";
 import { UploadIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import ReactImageEditor from "react-img-editor";
-import { useFilePicker } from "use-file-picker";
-import { FileContent } from "use-file-picker/types";
+import { useRef, useState } from "react";
+import ReactImageEditor from "./components/react-img-editor";
 
 export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
