@@ -1,16 +1,15 @@
 from process import process
 # 导入Flask
-from flask import Flask
-from flask import Flask, render_template, request
-import base64
+from flask import Flask, render_template
 from utils import image_to_base64
 
-
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/inpaint', methods=['POST'])
 def inpaint():
@@ -24,6 +23,7 @@ def inpaint():
 
     # 返回处理后的结果
     return response_data
+
 
 if __name__ == '__main__':
     app.run(debug=True)

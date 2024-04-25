@@ -5,12 +5,9 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Button,
   Link,
-  Badge,
 } from "@nextui-org/react";
 import { ThemeChanger } from "../ThemeChanger";
-import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 
@@ -33,9 +30,9 @@ export default function NavBar() {
 
       <NavbarContent justify='end'>
         <NavbarItem>
-          <Link href='/result' as={NextLink} isBlock>
+          {/* <Link href='/result' as={NextLink} isBlock>
             我的文件
-          </Link>
+          </Link> */}
         </NavbarItem>
         <NavbarItem>
           <ThemeChanger />

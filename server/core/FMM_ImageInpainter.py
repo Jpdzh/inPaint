@@ -1,9 +1,3 @@
-import numpy as np
-import heapq
-import math
-import os
-import cv2
-
 '''
 # Usage:
 # image: BGR image
@@ -13,13 +7,21 @@ inpainter.inpaint(mask, radius)
 inpainter.saveImage(outpath)
 '''
 
-KNOWN = 0 # in the known image area. Its T and I values are known.
-BAND = 1 # the pixel belongs to the narrow band. T value ready to update
-INSIDE = 2 # in the region to inpaint.
-adjacent_4 = [(0,1), (0,-1), (1,0), (-1,0)]
+import numpy as np
+import heapq
+import math
+import os
+import cv2
+
+KNOWN = 0  # in the known image area. Its T and I values are known.
+BAND = 1  # the pixel belongs to the narrow band. T value ready to update
+INSIDE = 2  # in the region to inpaint.
+adjacent_4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 INF = 1.0e6
 
+
 class ImageInpainter:
+
     def __init__(self, image):
         self.i = image
         self.l = image.shape[0]
@@ -44,7 +46,7 @@ class ImageInpainter:
         if flag1 == KNOWN and flag2 == KNOWN:
             dist1 = self.t[x1, y1]
             dist2 = self.t[x2, y2]
-            d = 2.0 - (dist1 - dist2) ** 2
+            d = 2.0 - (dist1 - dist2)**2
             if d > 0.0:
                 r = math.sqrt(d)
                 s = (dist1 + dist2 - r) / 2.0
@@ -117,8 +119,6 @@ class ImageInpainter:
                     flags[x_, y_] = BAND
                     heapq.heappush(narrowBand, (last_t, x_, y_))
 
-
-
     def tGradient(self, x, y):
         # Calculate gradient T (center estimation)
         curLevel = self.t[x, y]
@@ -176,14 +176,15 @@ class ImageInpainter:
 
                 if self.f[x_, y_] == INSIDE:
                     continue
-                dir_vector = np.array([x-x_, y-y_], dtype=float)
+                dir_vector = np.array([x - x_, y - y_], dtype=float)
                 dir_norm = np.linalg.norm(dir_vector)
 
                 if dir_norm > radius:
                     continue
 
                 # compute weight factors
-                dir = abs(dir_vector[0] * t_grad_x + dir_vector[1] * t_grad_y) / dir_norm
+                dir = abs(dir_vector[0] * t_grad_x +
+                          dir_vector[1] * t_grad_y) / dir_norm
                 #print(dir, dir_vector[0],t_grad_x, dir_vector[1], t_grad_y )
                 if dir == 0.0:
                     dir = 1e-6
@@ -234,6 +235,6 @@ class ImageInpainter:
 
     def saveImage(self, filepath):
         cv2.imwrite(filepath, self.output)
+
     def getOutput(self):
         return self.output
-

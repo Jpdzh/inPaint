@@ -24,3 +24,11 @@ Last, start the dev server and open <http://localhost:3000>:
 ```bash
 yarn dev
 ```
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2} \mathrm{d}x
+$$
+
+$$
+S = 2 \pi \int_{a}^{b} r(\theta) \sin(\theta) \sqrt{r^2(\theta) + r'^{2}(\theta)} \mathrm{d}x
+$$
