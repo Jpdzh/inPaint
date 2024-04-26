@@ -1,4 +1,3 @@
-
 import base64
 from PIL import Image
 import json
@@ -29,7 +28,6 @@ def ffm_process(img_base64: str, masked_base64: str):
     inpainter.inpaint(mask, 5)
     inpainted_img = inpainter.getOutput()
 
-
     cv2.imwrite(inpainted_path, inpainted_img)
 
     ssim_score = calc_ssim(original_path, inpainted_path)
@@ -38,14 +36,13 @@ def ffm_process(img_base64: str, masked_base64: str):
 
     inpainted_base64 = numpy_to_base64(inpainted_img)
 
-    response_data={
-
+    response_data = {
         'model': 'FMM',
         'orginal_img': img_base64,
-        'masked_img':masked_base64,
+        'masked_img': masked_base64,
         'inpaint_img': inpainted_base64,
         'psnr': psnr_score,
-        'ssmi':ssim_score,
-        'lpips':lpips_score
+        'ssmi': ssim_score,
+        'lpips': lpips_score
     }
     return response_data

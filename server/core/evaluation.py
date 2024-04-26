@@ -1,4 +1,3 @@
-
 from skimage.metrics import structural_similarity as ssim
 import numpy as np
 from skimage.metrics import peak_signal_noise_ratio as psnr
@@ -8,6 +7,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 import cv2
 
+
 def calc_ssim(img1_path, img2_path):
     img1 = Image.open(img1_path).convert('L')
     img2 = Image.open(img2_path).convert('L')
@@ -16,6 +16,7 @@ def calc_ssim(img1_path, img2_path):
     # 此处因为转换为灰度值之后的图像范围是0-255，所以data_range为255，如果转化为浮点数，且是0-1的范围，则data_range应为1
     ssim_score = ssim(img1, img2, data_range=255)
     return ssim_score
+
 
 def calc_psnr(img1_path, img2_path):
     img1 = Image.open(img1_path)
@@ -28,14 +29,10 @@ def calc_psnr(img1_path, img2_path):
     return psnr_score
 
 
-
-
-
 def calc_lpips(img1_path, img2_path):
     loss_fn_alex = lpips.LPIPS(net='alex')
     img1 = cv2.imread(img1_path)
     img2 = cv2.imread(img2_path)
-
 
     transf = transforms.ToTensor()
 
