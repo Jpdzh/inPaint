@@ -40,7 +40,7 @@ def ddpm_process(img_base64: str, masked_base64: str):
     lpips_score = calc_lpips(original_path, inpainted_path)
 
     response_data = {
-        'model': 'DDPM',  #模型
+        'model': 'ddpm',  #模型
         'original_img': img_base64,  #原图
         'masked_img': masked_base64,  #masked
         'inpainted_img': inpainted_img_base64,  #修复后

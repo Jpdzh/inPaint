@@ -1,7 +1,8 @@
-"""
-Like image_sample.py, but use a noisy image classifier to guide the sampling
-process towards more realistic images.
-"""
+import os
+
+import sys
+
+sys.path.insert(0, 'D:\\temp\\inPaint02\\server\\core')
 
 import os
 import torch as th

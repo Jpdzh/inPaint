@@ -17,7 +17,7 @@
 from functools import lru_cache
 import os
 import torch
-from utils import imwrite
+from server.core.utils import imwrite
 
 from collections import defaultdict
 from os.path import isfile, expanduser
@@ -66,7 +66,7 @@ class Default_Conf(NoneDict):
         ds_conf = candidates[dsName].copy()
 
         if ds_conf.get('mask_loader', False):
-            from guided_diffusion.image_datasets import load_data_inpa
+            from server.core.guided_diffusion.image_datasets import load_data_inpa
             return load_data_inpa(**ds_conf, conf=self)
         else:
             raise NotImplementedError()

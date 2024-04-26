@@ -1,26 +1,11 @@
-# Copyright (c) 2022 Huawei Technologies Co., Ltd.
-# Licensed under CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0 International) (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-#
-# The code is released for academic research use only. For commercial use, please contact Huawei Technologies Co., Ltd.
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# This repository was forked from https://github.com/openai/guided-diffusion, which is under the MIT license
-
 import yaml
 import os
 from PIL import Image
 import os
 import base64
 import io
-
+import numpy as np
+import cv2
 
 def txtread(path):
     path = os.path.expanduser(path)
@@ -49,3 +34,25 @@ def base64_to_png(base64_str, save_dir):
     img = Image.open(io.BytesIO(image_data))
     save_path = os.path.join(save_dir, '1.png')
     img.save(save_path, format="PNG")
+
+
+
+def base64_to_cv2(base64_str, is_grey):
+    # 解码 Base64 字符串为图像数据
+    image_data = base64.b64decode(base64_str)
+
+    # 将图像数据转换为 NumPy 数组
+    nparr = np.frombuffer(image_data, np.uint8)
+
+    # 使用 OpenCV 读取图像
+    if is_grey:
+        return cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+    else:
+        return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+
+def numpy_to_base64(image_np):
+    data = cv2.imencode('.jpg', image_np)[1]
+    image_bytes = data.tobytes()
+    image_base4 = base64.b64encode(image_bytes).decode('utf8')
+    return image_base4

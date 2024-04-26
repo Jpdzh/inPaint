@@ -8,7 +8,7 @@ from server.core.utils import base64_to_cv2, numpy_to_base64
 from server.core.evaluation import calc_psnr, calc_ssim, calc_lpips
 
 
-def fmm_process(img_base64: str, masked_base64: str) -> dict[str, Any]:
+def fmm_process(img_base64: str, masked_base64: str):
 
     original_path = '../core/log/fmm_res/original.png'
     inpainted_path = '../core/log/fmm_res/inpainted.png'
@@ -38,7 +38,7 @@ def fmm_process(img_base64: str, masked_base64: str) -> dict[str, Any]:
     inpainted_base64 = numpy_to_base64(inpainted_img)
 
     response_data = {
-        'model': 'FMM',
+        'model': 'fmm',
         'orginal_img': img_base64,
         'masked_img': masked_base64,
         'inpaint_img': inpainted_base64,
