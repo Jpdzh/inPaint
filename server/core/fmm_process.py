@@ -1,4 +1,5 @@
 import base64
+from typing import Any
 from PIL import Image
 import json
 from server.core.FMM_ImageInpainter import ImageInpainter
@@ -7,7 +8,7 @@ from server.core.utils import base64_to_cv2, numpy_to_base64
 from server.core.evaluation import calc_psnr, calc_ssim, calc_lpips
 
 
-def ffm_process(img_base64: str, masked_base64: str):
+def fmm_process(img_base64: str, masked_base64: str) -> dict[str, Any]:
 
     original_path = '../core/log/fmm_res/original.png'
     inpainted_path = '../core/log/fmm_res/inpainted.png'

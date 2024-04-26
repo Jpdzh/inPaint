@@ -1,5 +1,3 @@
-import sys
-
 from server.core.test import main  # 导入test.py中的main函数
 import conf_mgt
 from utils import yamlread
