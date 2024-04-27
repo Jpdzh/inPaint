@@ -21,6 +21,7 @@ import {
 import { UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactImageEditor from "./components/react-img-editor";
+import axios from "axios";
 
 export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -167,20 +168,12 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
                   masked_img: await blobToBase64(blob),
                 };
 
-                const response = await fetch(
+                const response = await axios.post<SubmitResponse>(
                   "http://localhost:5000/api/submit",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(submitRequest),
-                  }
+                  submitRequest
                 );
 
-                const _submitResponse: SubmitResponse = await response.json();
-
-                setSubmitResponse(() => _submitResponse);
+                setSubmitResponse(() => response.data);
               } catch (e) {
                 console.log(e);
                 alert(`提交失败 ${e}`);
