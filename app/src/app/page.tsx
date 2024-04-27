@@ -10,6 +10,7 @@ import {
 import { UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactImageEditor from "./components/react-img-editor";
+import axios, { AxiosResponse } from "axios";
 
 export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,9 +24,8 @@ export default function HomePage() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-    }
+    if (!file) return;
+    setSelectedImage(file);
   };
 
   return (
@@ -64,7 +64,25 @@ interface DoodleCanvasProps {
   clearSrc: () => void;
 }
 
+interface SubmitRequest {
+  model: string;
+  img: string;
+  masked_img: string;
+}
+
+interface SubmitResponse {
+  model: string; // 'ddpm',  #模型
+  original_img: string; // img_base64,  #原图
+  masked_img: string; // masked_base64,  #masked
+  inpainted_img: string; // inpainted_img_base64,  #修复后
+  psnr: number; // psnr_score,  #指标
+  ssmi: number; // ssim_score,
+  lpips: number; // lpips_score
+}
+
 function Editor({ src, clearSrc }: DoodleCanvasProps) {
+  const [submitResponse, setSubmitResponse] = useState<SubmitResponse>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const stageRef = useRef<any>();
 
   return (
@@ -96,17 +114,34 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
         <Button onPress={clearSrc}>取消选择</Button>
         <Button
           color='primary'
+          isLoading={isLoading}
           onPress={() => {
             const current = stageRef.current;
             if (current === undefined) return;
             const canvas = current.clearAndToCanvas({
               pixelRatio: current._pixelRatio,
             });
-            canvas.toBlob((blob: any) => {
-              const link = document.createElement("a");
-              link.download = "";
-              link.href = URL.createObjectURL(blob);
-              link.click();
+            canvas.toBlob(async (blob: any) => {
+              setIsLoading(true);
+
+              const submitRequest: SubmitRequest = {
+                model: "fmm",
+                img: src,
+                masked_img: blob,
+              };
+
+              try {
+                const _submitResponse = await axios.post<SubmitResponse>(
+                  "http://localhost:5000/api/submit",
+                  submitRequest
+                );
+
+                setSubmitResponse(() => _submitResponse.data);
+              } catch (e) {
+                alert(`提交失败 ${e}`);
+              } finally {
+                setIsLoading(false);
+              }
             }, "image/*");
           }}
         >
