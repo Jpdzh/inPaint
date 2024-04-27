@@ -21,7 +21,6 @@ import {
 import { UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactImageEditor from "./components/react-img-editor";
-import axios, { AxiosError, AxiosResponse } from "axios";
 
 export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +75,7 @@ interface DoodleCanvasProps {
 }
 
 enum Model {
-  fmm = "fmm",
+  fmm = "ffm",
   ddpm = "ddpm",
 }
 
@@ -102,7 +101,7 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
   const [selectedModel, setSelectedModel] = useState(Model.fmm);
   const stageRef = useRef<any>();
 
-  const models = Object.entries(Model);
+  const models = Object.entries(Model).map(([_, value]) => value);
 
   return !submitResponse ? (
     <Card>
@@ -113,9 +112,18 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
             请在图片上进行涂鸦
           </p>
         </div>
-        <Select label='选择模型' size='sm'>
-          {models.map(([key, value]) => (
-            <SelectItem key={key}></SelectItem>
+        <Select
+          label='选择模型'
+          size='sm'
+          className='max-w-xs'
+          defaultSelectedKeys={[selectedModel]}
+          onSelectionChange={(keys) => {
+            if (!(keys instanceof Set)) return;
+            setSelectedModel(keys.values().next().value);
+          }}
+        >
+          {models.map((key) => (
+            <SelectItem key={key}>{key}</SelectItem>
           ))}
         </Select>
       </CardHeader>
