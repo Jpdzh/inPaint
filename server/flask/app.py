@@ -2,11 +2,13 @@ from enum import Enum
 from re import sub
 import typing
 from flask import Flask, abort, request
+from flask_cors import CORS
 
 from server.core.ddpm_process import ddpm_process
 from server.core.fmm_process import fmm_process
 
 app = Flask(__name__)
+CORS(app)
 
 
 class Model(Enum):
@@ -34,7 +36,7 @@ class SubmitRequest:
         return SubmitRequest(model, img, masked_img)
 
 
-@app.route("/api/submit/")
+@app.route("/api/submit/", methods=["POST", "OPTIONS"])
 def submit():
     submitRequst = SubmitRequest.from_json(request.get_json())
 

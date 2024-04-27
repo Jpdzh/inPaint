@@ -17,7 +17,7 @@ import {
 import { Table, UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactImageEditor from "./components/react-img-editor";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -128,21 +128,29 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
             const canvas = current.clearAndToCanvas({
               pixelRatio: current._pixelRatio,
             });
-            canvas.toBlob(async (blob: any) => {
+            canvas.toBlob(async (blob: Blob) => {
               const submitRequest: SubmitRequest = {
                 model: "fmm",
                 img: src,
-                masked_img: blob,
+                masked_img: await blob.text(),
               };
 
               try {
                 setIsLoading(true);
-                const _submitResponse = await axios.post<SubmitResponse>(
-                  "http://localhost:5000/api/submit",
-                  submitRequest
-                );
-                setSubmitResponse(() => _submitResponse.data);
+
+                const response = await fetch("http://localhost:5000/api/submit", {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(submitRequest),
+                });
+
+                const _submitResponse:SubmitResponse =  await response.json();
+
+                setSubmitResponse(() => _submitResponse);
               } catch (e) {
+                console.log(e)
                 alert(`提交失败 ${e}`);
               } finally {
                 setIsLoading(false);

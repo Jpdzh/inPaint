@@ -24,3 +24,10 @@ Last, start the dev server and open <http://localhost:3000>:
 ```bash
 yarn dev
 ```
+
+## Backend
+
+### Core
+
+### Flask
+
