@@ -129,8 +129,6 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
               pixelRatio: current._pixelRatio,
             });
             canvas.toBlob(async (blob: any) => {
-              setIsLoading(true);
-
               const submitRequest: SubmitRequest = {
                 model: "fmm",
                 img: src,
@@ -138,6 +136,7 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
               };
 
               try {
+                setIsLoading(true);
                 const _submitResponse = await axios.post<SubmitResponse>(
                   "http://localhost:5000/api/submit",
                   submitRequest
