@@ -34,7 +34,7 @@ class SubmitRequest:
         return SubmitRequest(model, img, masked_img)
 
 
-@app.route("/api/submit/", methods=["POST", "OPTIONS"])
+@app.route("/api/submit", methods=["POST", "OPTIONS"])
 def submit():
     if request.method == "OPTIONS":
         return _build_cors_preflight_response()

@@ -6,7 +6,11 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Code,
   Image,
+  Select,
+  SelectItem,
+  Table,
   TableBody,
   TableCell,
   TableColumn,
@@ -14,7 +18,7 @@ import {
   TableRow,
   Textarea,
 } from "@nextui-org/react";
-import { Table, UploadIcon } from "lucide-react";
+import { UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactImageEditor from "./components/react-img-editor";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -71,14 +75,19 @@ interface DoodleCanvasProps {
   clearSrc: () => void;
 }
 
+enum Model {
+  fmm = "fmm",
+  ddpm = "ddpm",
+}
+
 interface SubmitRequest {
-  model: string;
+  model: Model;
   img: string;
   masked_img: string;
 }
 
 interface SubmitResponse {
-  model: string; // 'ddpm',  #模型
+  model: Model; // 'ddpm',  #模型
   original_img: string; // img_base64,  #原图
   masked_img: string; // masked_base64,  #masked
   inpainted_img: string; // inpainted_img_base64,  #修复后
@@ -90,15 +99,25 @@ interface SubmitResponse {
 function Editor({ src, clearSrc }: DoodleCanvasProps) {
   const [submitResponse, setSubmitResponse] = useState<SubmitResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedModel, setSelectedModel] = useState(Model.fmm);
   const stageRef = useRef<any>();
+
+  const models = Object.entries(Model);
 
   return !submitResponse ? (
     <Card>
-      <CardHeader className='flex flex-col items-start gap-1'>
-        <h4 className='font-medium text-large'>编辑器</h4>
-        <p className='text-tiny text-white/60 uppercase font-bold'>
-          请在图片上进行涂鸦
-        </p>
+      <CardHeader className='flex justify-between'>
+        <div className='flex flex-col gap-1'>
+          <h4 className='font-medium text-large'>编辑器</h4>
+          <p className='text-tiny text-foreground-600 uppercase font-bold'>
+            请在图片上进行涂鸦
+          </p>
+        </div>
+        <Select label='选择模型' size='sm'>
+          {models.map(([key, value]) => (
+            <SelectItem key={key}></SelectItem>
+          ))}
+        </Select>
       </CardHeader>
       <CardBody>
         <ReactImageEditor
@@ -135,7 +154,7 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
                 const imgBase64 = await getImageBase64(src);
 
                 const submitRequest: SubmitRequest = {
-                  model: "fmm",
+                  model: selectedModel,
                   img: imgBase64!,
                   masked_img: await blobToBase64(blob),
                 };
@@ -173,16 +192,31 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
 }
 
 function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
+  console.log(submitResponse);
+
   return (
     <Card>
       <CardHeader>
         <h4 className='font-medium text-large'>修复结果分析</h4>
       </CardHeader>
       <CardBody className='flex gap-8'>
-        <div>
-          <Image src={submitResponse.original_img} />
-          <Image src={submitResponse.masked_img} />
-          <Image src={submitResponse.inpainted_img} />
+        <div className='flex gap-8 px-4'>
+          <div className='flex flex-col justify-center items-center gap-2'>
+            <Image
+              src={"data:image/png;base64," + submitResponse.original_img}
+            />
+            <Code>原图</Code>
+          </div>
+          <div className='flex flex-col justify-center items-center gap-2'>
+            <Image src={"data:image/png;base64," + submitResponse.masked_img} />
+            <Code color='secondary'>编辑后</Code>
+          </div>
+          <div className='flex flex-col justify-center items-center gap-2'>
+            <Image
+              src={"data:image/png;base64," + submitResponse.inpainted_img}
+            />
+            <Code color='success'>修复后</Code>
+          </div>
         </div>
         <Table aria-label='result table'>
           <TableHeader>
@@ -206,10 +240,7 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
           isDisabled
           label='评估指标说明'
           labelPlacement='outside'
-          defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。
-          PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。
-          LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
-          className='max-w-xs'
+          defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
         />
       </CardFooter>
     </Card>

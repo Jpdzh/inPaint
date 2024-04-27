@@ -39,9 +39,9 @@ def fmm_process(img_base64: str, masked_base64: str):
 
     response_data = {
         'model': 'fmm',
-        'orginal_img': img_base64,
+        'original_img': img_base64,
         'masked_img': masked_base64,
-        'inpaint_img': inpainted_base64,
+        'inpainted_img': inpainted_base64,
         'psnr': psnr_score,
         'ssmi': ssim_score,
         'lpips': lpips_score
