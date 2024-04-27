@@ -1,7 +1,5 @@
 from enum import Enum
-from re import sub
-import typing
-from flask import Flask, abort, request
+from flask import Flask, abort, jsonify, make_response, request
 from flask_cors import CORS
 
 from server.core.ddpm_process import ddpm_process
@@ -38,17 +36,39 @@ class SubmitRequest:
 
 @app.route("/api/submit/", methods=["POST", "OPTIONS"])
 def submit():
-    submitRequst = SubmitRequest.from_json(request.get_json())
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
 
-    if submitRequst is None:
+    submitRequest = SubmitRequest.from_json(request.get_json())
+
+    if submitRequest is None:
         abort(400)
 
-    if submitRequst.model == 'fmm':
-        return fmm_process(submitRequst.img, submitRequst.masked_img)
-    elif submitRequst.model == 'ddpm':
-        return ddpm_process(submitRequst.img, submitRequst.masked_img)
-    else:
+    def switch():
+        if submitRequest.model == 'fmm':
+            return fmm_process(submitRequest.img, submitRequest.masked_img)
+        elif submitRequest.model == 'ddpm':
+            return ddpm_process(submitRequest.img, submitRequest.masked_img)
+
+    switched = switch()
+
+    if switched is None:
         abort(400)
+
+    return _corsify_actual_response(jsonify(switched))
+
+
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 if __name__ == '__main__':
