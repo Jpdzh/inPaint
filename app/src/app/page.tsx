@@ -129,28 +129,33 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
               pixelRatio: current._pixelRatio,
             });
             canvas.toBlob(async (blob: Blob) => {
-              const submitRequest: SubmitRequest = {
-                model: "fmm",
-                img: src,
-                masked_img: await blob.text(),
-              };
-
               try {
                 setIsLoading(true);
 
-                const response = await fetch("http://localhost:5000/api/submit", {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(submitRequest),
-                });
+                const imgBase64 = await getImageBase64(src);
 
-                const _submitResponse:SubmitResponse =  await response.json();
+                const submitRequest: SubmitRequest = {
+                  model: "fmm",
+                  img: imgBase64!,
+                  masked_img: await blobToBase64(blob),
+                };
+
+                const response = await fetch(
+                  "http://localhost:5000/api/submit",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(submitRequest),
+                  }
+                );
+
+                const _submitResponse: SubmitResponse = await response.json();
 
                 setSubmitResponse(() => _submitResponse);
               } catch (e) {
-                console.log(e)
+                console.log(e);
                 alert(`提交失败 ${e}`);
               } finally {
                 setIsLoading(false);
@@ -209,4 +214,33 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
       </CardFooter>
     </Card>
   );
+}
+
+async function fetchBlobImage(src: string): Promise<Blob> {
+  const response = await fetch(src);
+  const blob = await response.blob();
+  return blob;
+}
+
+async function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result?.toString().split(",")[1] || "";
+      resolve(base64String);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function getImageBase64(src: string): Promise<string | null> {
+  try {
+    const blob = await fetchBlobImage(src);
+    const base64String = await blobToBase64(blob);
+    return base64String;
+  } catch (error) {
+    console.error("Error getting base64 image:", error);
+    return null;
+  }
 }
