@@ -50,8 +50,8 @@ use_new_attention_order: false
 clip_denoised: true
 use_ddim: false
 image_size: 256
-classifier_path: ./data/pretrained/256x256_classifier.pt
-model_path: ./data/pretrained/256x256_diffusion.pt
+classifier_path: ../core/data/pretrained/256x256_classifier.pt
+model_path: ../core/data/pretrained/256x256_diffusion.pt
 name: test_inet256_ex64
 inpa_inj_sched_prev: true
 n_jobs: 25
@@ -66,8 +66,8 @@ data:
   eval:
     lama_inet256_ex64_n100_test:
       mask_loader: true
-      gt_path: ./data/datasets/gts/free
-      mask_path: ./data/datasets/gt_keep_masks/free
+      gt_path: ../core/data/datasets/gts/free
+      mask_path: ../core/data/datasets/gt_keep_masks/free
       image_size: 256
       class_cond: false
       deterministic: true
@@ -81,7 +81,7 @@ data:
         name: random_ex64_256
       max_len: 1
       paths:
-        srs: ./log/test_free/inpainted
-        lrs: ./log/test_free/gt_masked
-        gts: ./log/test_free/gt
+        srs: ../core/log/test_free/inpainted
+        lrs: ..core/log/test_free/gt_masked
+        gts: ../core/log/test_free/gt
         gt_keep_masks: ./log/test_free/gt_keep_mask

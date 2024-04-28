@@ -76,7 +76,7 @@ interface DoodleCanvasProps {
 }
 
 enum Model {
-  fmm = "ffm",
+  fmm = "fmm",
   ddpm = "ddpm",
 }
 
@@ -115,6 +115,8 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
         </div>
         <Select
           label='选择模型'
+          required
+          isRequired
           size='sm'
           className='max-w-xs'
           defaultSelectedKeys={[selectedModel]}
