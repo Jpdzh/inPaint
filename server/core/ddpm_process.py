@@ -2,12 +2,15 @@ from server.core.test import main  # 导入test.py中的main函数
 import conf_mgt
 from utils import yamlread
 from utils import image_to_base64
-from server.core.utils import base64_to_cv2
+from server.core.utils import base64_to_cv2, resize_image_and_convert_to_base64
 import cv2
 from server.core.evaluation import calc_psnr, calc_ssim, calc_lpips
 
 
 def ddpm_process(img_base64: str, masked_base64: str):
+    img_base64 = resize_image_and_convert_to_base64(img_base64)
+    masked_base64 = resize_image_and_convert_to_base64(masked_base64)
+
     conf_path = '../core/confs/my_schedule.yml'
     conf = conf_mgt.conf_base.Default_Conf()
     conf.update(yamlread(conf_path))

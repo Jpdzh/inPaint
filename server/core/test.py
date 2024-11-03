@@ -2,7 +2,7 @@ import os
 
 import sys
 
-sys.path.insert(0, 'D:\\temp\\inPaint02\\server\\core')
+sys.path.insert(0, 'D:\\inPaint\\server\\core')
 
 import os
 import torch as th

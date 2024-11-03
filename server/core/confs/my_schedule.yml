@@ -50,18 +50,18 @@ use_new_attention_order: false
 clip_denoised: true
 use_ddim: false
 image_size: 256
-classifier_path: ../core/data/pretrained/256x256_classifier.pt
-model_path: ../core/data/pretrained/256x256_diffusion.pt
+classifier_path: ../core/data/pretrained/model/256x256_classifier.pt
+model_path: ../core/data/pretrained/model/256x256_diffusion.pt
 name: test_inet256_ex64
 inpa_inj_sched_prev: true
 n_jobs: 25
 print_estimated_vars: true
 inpa_inj_sched_prev_cumnoise: false
 schedule_jump_params:
-  t_T: 50
+  t_T: 100
   n_sample: 1
   jump_length: 10
-  jump_n_sample: 5
+  jump_n_sample: 10
 data:
   eval:
     lama_inet256_ex64_n100_test:

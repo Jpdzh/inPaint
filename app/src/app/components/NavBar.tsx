@@ -24,7 +24,7 @@ export default function NavBar() {
           color='foreground'
         >
           <p className='text-2xl'>🎨</p>
-          <p className='text-xl font-bold'>InPaint</p>
+          <p className='text-xl font-bold'>瓷盘图像修复平台</p>
         </Link>
       </NavbarBrand>
 

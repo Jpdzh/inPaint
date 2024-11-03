@@ -4,12 +4,14 @@ from PIL import Image
 import json
 from server.core.FMM_ImageInpainter import ImageInpainter
 import cv2
-from server.core.utils import base64_to_cv2, numpy_to_base64
+from server.core.utils import base64_to_cv2, numpy_to_base64, resize_image_and_convert_to_base64
 from server.core.evaluation import calc_psnr, calc_ssim, calc_lpips
 
 
 def fmm_process(img_base64: str, masked_base64: str):
 
+    img_base64 = resize_image_and_convert_to_base64(img_base64)
+    masked_base64 = resize_image_and_convert_to_base64(masked_base64)
     original_path = '../core/log/fmm_res/original.png'
     inpainted_path = '../core/log/fmm_res/inpainted.png'
 

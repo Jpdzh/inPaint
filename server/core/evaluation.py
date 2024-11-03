@@ -33,7 +33,7 @@ def calc_lpips(img1_path, img2_path):
     loss_fn_alex = lpips.LPIPS(net='alex')
     img1 = cv2.imread(img1_path)
     img2 = cv2.imread(img2_path)
-
+    img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]))
     transf = transforms.ToTensor()
 
     t1 = transf(img1)
