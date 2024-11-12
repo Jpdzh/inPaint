@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Providers } from "./provider";
-import NavBar from "./components/NavBar";
-import { Link } from "@nextui-org/react";
+import type { Metadata } from 'next';
+import './globals.css';
+import { Providers } from './provider';
+import NavBar from './components/NavBar';
+import { Link } from '@nextui-org/react';
 
 export const metadata: Metadata = {
-  title: "InPaint",
-  description: "InPaint | 修复图片！",
+  title: 'InPaint',
+  description: 'InPaint | 修复图片！',
 };
 
 export default function RootLayout({
