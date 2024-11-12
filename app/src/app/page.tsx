@@ -8,6 +8,8 @@ import {
   CardHeader,
   Code,
   Image,
+  Radio,
+  RadioGroup,
   Select,
   SelectItem,
   Table,
@@ -106,29 +108,25 @@ function Editor({ src, clearSrc }: DoodleCanvasProps) {
 
   return !submitResponse ? (
     <Card>
-      <CardHeader className='flex justify-between'>
+      <CardHeader className='flex justify-between items-start'>
         <div className='flex flex-col gap-1'>
           <h4 className='font-medium text-large'>编辑器</h4>
           <p className='text-tiny text-foreground-600 uppercase font-bold'>
             请在图片上进行涂鸦
           </p>
         </div>
-        <Select
+        <RadioGroup
           label='选择模型'
-          required
-          isRequired
           size='sm'
-          className='max-w-xs'
-          defaultSelectedKeys={[selectedModel]}
-          onSelectionChange={(keys) => {
-            if (!(keys instanceof Set)) return;
-            setSelectedModel(keys.values().next().value);
-          }}
+          defaultValue={selectedModel}
+          onValueChange={(value) =>
+            setSelectedModel(models.find((e) => e == value)!)
+          }
         >
           {models.map((key) => (
-            <SelectItem key={key}>{key}</SelectItem>
+            <Radio value={key}>{key}</Radio>
           ))}
-        </Select>
+        </RadioGroup>
       </CardHeader>
       <CardBody>
         <ReactImageEditor
