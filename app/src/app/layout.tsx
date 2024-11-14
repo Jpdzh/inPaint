@@ -20,7 +20,7 @@ export default function RootLayout({
         <Providers>
           <NavBar />
           {children}
-          <footer className='flex w-full flex-col p-4 gap-1'>
+          <footer className='flex w-full flex-col p-4 gap-1 bg-gray-900'>
             <div className='flex items-center justify-center gap-3 '>
               <div className='flex items-center justify-center gap-1'>
                 <p className='text-large font-medium'>🎨</p>
