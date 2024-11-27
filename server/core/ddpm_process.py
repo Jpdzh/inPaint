@@ -11,13 +11,14 @@ def ddpm_process(img_base64: str, masked_base64: str):
     img_base64 = resize_image_and_convert_to_base64(img_base64)
     masked_base64 = resize_image_and_convert_to_base64(masked_base64)
 
-    conf_path = '../core/confs/my_schedule.yml'
+    conf_path = './server/core/confs/my_schedule.yml'
     conf = conf_mgt.conf_base.Default_Conf()
     conf.update(yamlread(conf_path))
 
-    original_path = '../core/data/datasets/gts/free/1.png'
-    mask_path = '../core/data/datasets/gt_keep_masks/free/1.png'
-    inpainted_path = '../core/log/test_free/inpainted/1.png'
+
+    original_path = './server/core/data/datasets/gts/free/1.png'
+    mask_path = './server/core/data/datasets/gt_keep_masks/free/1.png'
+    inpainted_path = './server/core/log/ddpm_res/inpainted/1.png'
 
     original_img = base64_to_cv2(img_base64, 0)
     masked_img = base64_to_cv2(masked_base64, 0)

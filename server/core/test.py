@@ -2,7 +2,9 @@ import os
 
 import sys
 
-sys.path.insert(0, 'D:\\inPaint\\server\\core')
+# cwd 相关问题
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
 
 import os
 import torch as th

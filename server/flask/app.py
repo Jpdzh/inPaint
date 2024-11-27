@@ -1,10 +1,11 @@
+import sys
 from enum import Enum
 from flask import Flask, abort, jsonify, make_response, request
 from flask_cors import CORS
 
-from server.core.ddpm_process import ddpm_process
-from server.core.fmm_process import fmm_process
-
+from ..core.ddpm_process import ddpm_process
+from ..core.fmm_process import fmm_process
+# from ..core.gan_process import gan_process
 app = Flask(__name__)
 CORS(app)
 

@@ -12,8 +12,10 @@ def fmm_process(img_base64: str, masked_base64: str):
 
     img_base64 = resize_image_and_convert_to_base64(img_base64)
     masked_base64 = resize_image_and_convert_to_base64(masked_base64)
-    original_path = '../core/log/fmm_res/original.png'
-    inpainted_path = '../core/log/fmm_res/inpainted.png'
+
+    
+    original_path='D://log/fmm_res/original.png'
+    inpainted_path='D://log/fmm_res/inpainted.png'
 
     original_img = base64_to_cv2(img_base64, 0)
     masked_img = base64_to_cv2(masked_base64, 0)
