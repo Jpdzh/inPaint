@@ -1,11 +1,12 @@
-import yaml
-import os
-from PIL import Image
-import os
 import base64
 import io
-import numpy as np
+import os
+from io import BytesIO
 import cv2
+import numpy as np
+import yaml
+from PIL import Image
+
 
 def txtread(path):
     path = os.path.expanduser(path)
@@ -34,7 +35,6 @@ def base64_to_png(base64_str, save_dir):
     img = Image.open(io.BytesIO(image_data))
     save_path = os.path.join(save_dir, '1.png')
     img.save(save_path, format="PNG")
-
 
 
 def base64_to_cv2(base64_str, is_grey):
@@ -73,10 +73,6 @@ def numpy_to_base64(image_np):
 #
 #     return img_base64
 
-
-
-
-from io import BytesIO
 
 def resize_image_and_convert_to_base64(base64_str):
     # 将base64字符串解码为图像
