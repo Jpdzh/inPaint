@@ -27,7 +27,16 @@ yarn dev
 
 ## Backend
 
-### Core
+### setup
 
-### Flask
+#### 1.Environment
 
+```bash
+pip install numpy torch blobfile tqdm pyYaml pillow
+```
+
+#### 2. start the server
+
+```bash
+python -m server.core.flask.app
+```
