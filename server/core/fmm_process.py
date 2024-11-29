@@ -1,3 +1,4 @@
+import os
 import base64
 from typing import Any
 from PIL import Image
@@ -18,6 +19,7 @@ def fmm_process(img_base64: str, masked_base64: str):
 
     original_img = base64_to_cv2(img_base64, 0)
     masked_img = base64_to_cv2(masked_base64, 0)
+    os.makedirs(os.path.dirname(original_path), exist_ok=True)
     cv2.imwrite(original_path, original_img)
 
     # 将两张图像转换为灰度图
@@ -32,6 +34,7 @@ def fmm_process(img_base64: str, masked_base64: str):
     inpainter.inpaint(mask, 5)
     inpainted_img = inpainter.getOutput()
 
+    os.makedirs(os.path.dirname(inpainted_path), exist_ok=True)
     cv2.imwrite(inpainted_path, inpainted_img)
 
     ssim_score = calc_ssim(original_path, inpainted_path)

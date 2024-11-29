@@ -1,3 +1,4 @@
+import os
 from server.core.test import main  # 导入test.py中的main函数
 import conf_mgt
 from utils import yamlread
@@ -32,10 +33,13 @@ def ddpm_process(img_base64: str, masked_base64: str):
     mask = cv2.bitwise_not(mask)
 
     # 保存原图和 mask
+    os.makedirs(os.path.dirname(original_path), exist_ok=True)
     cv2.imwrite(original_path, original_img)
+    os.makedirs(os.path.dirname(mask_path), exist_ok=True)
     cv2.imwrite(mask_path, mask)
 
     main(conf)
+    os.makedirs(os.path.dirname(inpainted_path), exist_ok=True)
     inpainted_img_base64 = image_to_base64(inpainted_path)
 
     #评估指标
