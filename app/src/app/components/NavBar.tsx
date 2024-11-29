@@ -16,7 +16,6 @@ export default function NavBar() {
     <Navbar
       isBordered
       isBlurred
-      shouldHideOnScroll
       className="bg-[url('/assets/navbar.png')] bg-[#1f4a81] bg-cover bg-center"
       height='6rem'
     >
