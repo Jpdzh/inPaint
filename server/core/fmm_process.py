@@ -15,7 +15,7 @@ def fmm_process(img_base64: str, masked_base64: str):
 
 
     original_path='./server/core/data/datasets/gts/free/1.png'
-    inpainted_path='./server/core/log/ffm_res/inpainted/1.png'
+    inpainted_path='./server/core/log/fmm_res/inpainted/1.png'
 
     original_img = base64_to_cv2(img_base64, 0)
     masked_img = base64_to_cv2(masked_base64, 0)
