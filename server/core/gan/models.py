@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers import Flatten, Concatenate
+from server.core.gan.layers import Flatten, Concatenate
 
 
 class CompletionNetwork(nn.Module):

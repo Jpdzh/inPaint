@@ -3,9 +3,11 @@ from enum import Enum
 from flask import Flask, abort, jsonify, make_response, request
 from flask_cors import CORS
 
+from server.core import gan_process
+
 from ..core.ddpm_process import ddpm_process
 from ..core.fmm_process import fmm_process
-# from ..core.gan_process import gan_process
+from ..core.gan_process import gan_process
 app = Flask(__name__)
 CORS(app)
 
@@ -13,6 +15,7 @@ CORS(app)
 class Model(Enum):
     FMM = 'fmm'
     DDPM = 'ddpm'
+    GAN='gan'
 
 
 class SubmitRequest:
@@ -50,6 +53,8 @@ def submit():
             return fmm_process(submitRequest.img, submitRequest.masked_img)
         elif submitRequest.model == 'ddpm':
             return ddpm_process(submitRequest.img, submitRequest.masked_img)
+        elif submitRequest.model=='gan':
+            return gan_process(submitRequest.img,submitRequest.masked_img)
 
     switched = switch()
 
