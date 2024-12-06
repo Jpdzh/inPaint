@@ -81,28 +81,19 @@ function SectionTwo() {
 
 export default function HomePage() {
   return (
-    <main className='container min-w-16 mx-auto max-w-8xl flex-grow'>
-      <section className='flex flex-col justify-center items-center bg-[url("/assets/butterfly.png")] bg-[right_5rem_top_5rem] bg-[length:40%] bg-no-repeat'>
-        <div className='flex flex-col justify-between w-full h-full bg-[url("/assets/cloud.png")] bg-[left_5rem_bottom_5rem] bg-[length:40%] bg-no-repeat'>
-          <SectionOne />
-          <SectionTwo />
+    <div className='bg-[url("/assets/蓝布背景.png")]'>
+      <main className='container min-w-16 mx-auto max-w-8xl flex-grow'>
+        <section className='flex flex-col justify-center items-center bg-[url("/assets/butterfly.png")] bg-[right_5rem_top_5rem] bg-[length:40%] bg-no-repeat'>
+          <div className='flex flex-col justify-between w-full h-full bg-[url("/assets/cloud.png")] bg-[left_5rem_bottom_5rem] bg-[length:40%] bg-no-repeat'>
+            <SectionOne />
+            <SectionTwo />
+          </div>
 
-          {/* {selectedImage !== undefined ? (
-          <Editor
-            src={URL.createObjectURL(selectedImage)}
-            clearSrc={() => setSelectedImage(undefined)}
-          />
-        ) : (
-          <>
-
-          </>
-        )} */}
-        </div>
-
-        <Divider className='my-4' />
-      </section>
-      <UploadPage />
-    </main>
+          <Divider className='my-4' />
+        </section>
+        <UploadPage />
+      </main>
+    </div>
   );
 }
 

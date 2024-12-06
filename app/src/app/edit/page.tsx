@@ -14,6 +14,11 @@ import {
   Textarea,
   Radio,
   Image,
+  Link,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from '@nextui-org/react';
 import axios from 'axios';
 import { Code, Table } from 'lucide-react';
@@ -26,7 +31,135 @@ export default function EditPage() {
   const url = searchParams.get('url');
   if (url === null) redirect('404');
 
-  return <Editor src={url}></Editor>;
+  const [submitResponse, setSubmitResponse] = useState<SubmitResponse>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedModel, setSelectedModel] = useState(Model.fmm);
+  const models = Object.entries(Model).map(([_, value]) => value);
+
+  const stageRef = useRef<any>();
+
+  return (
+    <div className='h-full bg-[url("/assets/蓝布背景.png")]'>
+      <section className='container h-full min-w-16 mx-auto max-w-8xl flex-grow bg-[url("/assets/butterfly-2.png")] bg-[right_5rem_top_5rem] bg-[length:40%] bg-no-repeat'>
+        <div className='flex h-full items-center justify-between bg-[url("/assets/phoenix.png")] bg-[left_5rem_bottom_5rem] bg-[length:40%] bg-no-repeat'>
+          <div className='flex  relative w-[50%] aspect-square items-center justify-center'>
+            <Image
+              src='/assets/图片框.png'
+              className='absolute top-0 left-0 rotate-90 w-[30%]  aspect-square'
+              radius='none'
+              removeWrapper
+            />
+            <Image
+              src='/assets/图片框.png'
+              className='absolute bottom-0 right-0 -rotate-90 w-[30%]  aspect-square'
+              radius='none'
+              removeWrapper
+            />
+            <ReactImageEditor
+              src={url}
+              getStage={(stage) => (stageRef.current = stage)}
+              defaultPluginName='pen'
+              toolbar={{ items: [] }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                height: 'auto',
+                width: 'auto',
+                overflow: 'hidden',
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-36'>
+            <div className='flex justify-center items-center'>
+              <Image
+                src='/assets/按键1.png'
+                width={48}
+                radius='none'
+                className='-rotate-90'
+              />
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant='light'>{`请选择模型：${selectedModel}`}</Button>
+                </DropdownTrigger>
+                <DropdownMenu<Model>
+                  selectionMode='single'
+                  onAction={(key) => setSelectedModel(key as Model)}
+                >
+                  {models.map((key) => (
+                    <DropdownItem key={key}>{key}</DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+
+              <Image
+                src='/assets/按键1.png'
+                width={48}
+                radius='none'
+                className='rotate-90'
+              />
+            </div>
+
+            <div className='flex justify-center items-center'>
+              <Image
+                src='/assets/按键1.png'
+                width={48}
+                radius='none'
+                className='-rotate-90'
+              />
+
+              <Button
+                variant='light'
+                isLoading={isLoading}
+                onPress={() => {
+                  const current = stageRef.current;
+                  if (current === undefined) return;
+                  const canvas = current.clearAndToCanvas({
+                    pixelRatio: current._pixelRatio,
+                  });
+                  canvas.toBlob(async (blob: Blob) => {
+                    try {
+                      setIsLoading(true);
+
+                      const imgBase64 = await getImageBase64(url);
+
+                      const submitRequest: SubmitRequest = {
+                        model: selectedModel,
+                        img: imgBase64!,
+                        masked_img: await blobToBase64(blob),
+                      };
+
+                      const response = await axios.post<SubmitResponse>(
+                        'http://localhost:5000/api/submit',
+                        submitRequest
+                      );
+
+                      setSubmitResponse(() => response.data);
+                    } catch (e) {
+                      console.log(e);
+                      alert(`提交失败 ${e}`);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }, 'image/*');
+                }}
+              >
+                开始修复
+              </Button>
+
+              <Image
+                src='/assets/按键1.png'
+                width={48}
+                radius='none'
+                className='rotate-90'
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 interface DoodleCanvasProps {
@@ -36,6 +169,7 @@ interface DoodleCanvasProps {
 enum Model {
   fmm = 'fmm',
   ddpm = 'ddpm',
+  gan = 'gan',
 }
 
 interface SubmitRequest {
@@ -52,99 +186,6 @@ interface SubmitResponse {
   psnr: number; // psnr_score,  #指标
   ssmi: number; // ssim_score,
   lpips: number; // lpips_score
-}
-
-function Editor({ src }: DoodleCanvasProps) {
-  const [submitResponse, setSubmitResponse] = useState<SubmitResponse>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedModel, setSelectedModel] = useState(Model.fmm);
-  const stageRef = useRef<any>();
-
-  const models = Object.entries(Model).map(([_, value]) => value);
-
-  return !submitResponse ? (
-    <Card>
-      <CardHeader className='flex justify-between items-start'>
-        <div className='flex flex-col gap-1'>
-          <h4 className='font-medium text-large'>编辑器</h4>
-          <p className='text-tiny text-foreground-600 uppercase font-bold'>
-            请在图片上进行涂鸦
-          </p>
-        </div>
-        <RadioGroup
-          label='选择模型'
-          size='sm'
-          defaultValue={selectedModel}
-          onValueChange={(value) =>
-            setSelectedModel(models.find((e) => e == value)!)
-          }
-        >
-          {models.map((key) => (
-            <Radio value={key}>{key}</Radio>
-          ))}
-        </RadioGroup>
-      </CardHeader>
-      <CardBody>
-        <ReactImageEditor
-          src={src}
-          getStage={(stage) => (stageRef.current = stage)}
-          defaultPluginName='pen'
-          toolbar={{ items: [] }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            height: 'auto',
-            width: 'auto',
-            overflow: 'auto',
-          }}
-        />
-      </CardBody>
-      <CardFooter className='flex justify-end gap-2'>
-        <Button
-          color='primary'
-          isLoading={isLoading}
-          onPress={() => {
-            const current = stageRef.current;
-            if (current === undefined) return;
-            const canvas = current.clearAndToCanvas({
-              pixelRatio: current._pixelRatio,
-            });
-            canvas.toBlob(async (blob: Blob) => {
-              try {
-                setIsLoading(true);
-
-                const imgBase64 = await getImageBase64(src);
-
-                const submitRequest: SubmitRequest = {
-                  model: selectedModel,
-                  img: imgBase64!,
-                  masked_img: await blobToBase64(blob),
-                };
-
-                const response = await axios.post<SubmitResponse>(
-                  'http://localhost:5000/api/submit',
-                  submitRequest
-                );
-
-                setSubmitResponse(() => response.data);
-              } catch (e) {
-                console.log(e);
-                alert(`提交失败 ${e}`);
-              } finally {
-                setIsLoading(false);
-              }
-            }, 'image/*');
-          }}
-        >
-          开始修复
-        </Button>
-      </CardFooter>
-    </Card>
-  ) : (
-    <ResultView submitResponse={submitResponse} />
-  );
 }
 
 function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
