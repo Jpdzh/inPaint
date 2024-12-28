@@ -1,29 +1,23 @@
 'use client';
 import {
-  Card,
-  CardHeader,
-  RadioGroup,
-  CardBody,
-  CardFooter,
   Button,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Textarea,
-  Radio,
-  Image,
-  Link,
+  Code,
   Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
   DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Image,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  Textarea,
 } from '@nextui-org/react';
 import axios from 'axios';
-import { Code, Table } from 'lucide-react';
 import { redirect, useSearchParams } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import ReactImageEditor from '../components/react-img-editor';
 
 export default function EditPage() {
@@ -36,9 +30,13 @@ export default function EditPage() {
   const [selectedModel, setSelectedModel] = useState(Model.fmm);
   const models = Object.entries(Model).map(([_, value]) => value);
 
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+
   const stageRef = useRef<any>();
 
-  return (
+  return isConfirmed ? (
+    <ResultView submitResponse={submitResponse!} />
+  ) : (
     <div className='h-full bg-[url("/assets/蓝布背景.png")]'>
       <section className='container h-full min-w-16 mx-auto max-w-8xl flex-grow bg-[url("/assets/butterfly-2.png")] bg-[right_5rem_top_5rem] bg-[length:40%] bg-no-repeat'>
         <div className='flex h-full items-center justify-between bg-[url("/assets/phoenix.png")] bg-[left_5rem_bottom_5rem] bg-[length:40%] bg-no-repeat'>
@@ -55,115 +53,167 @@ export default function EditPage() {
               radius='none'
               removeWrapper
             />
-            <ReactImageEditor
-              src={url}
-              getStage={(stage) => (stageRef.current = stage)}
-              defaultPluginName='pen'
-              toolbar={{ items: [] }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                height: 'auto',
-                width: 'auto',
-                overflow: 'hidden',
-              }}
-            />
+            {submitResponse ? (
+              <Image
+                src={'data:image/png;base64,' + submitResponse.inpainted_img}
+              />
+            ) : (
+              <ReactImageEditor
+                src={url}
+                getStage={(stage) => (stageRef.current = stage)}
+                defaultPluginName='pen'
+                toolbar={{ items: [] }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  height: 'auto',
+                  width: 'auto',
+                  overflow: 'hidden',
+                }}
+              />
+            )}
           </div>
           <div className='flex flex-col gap-36'>
-            <div className='flex justify-center items-center'>
-              <Image
-                src='/assets/按键1.png'
-                width={48}
-                radius='none'
-                className='-rotate-90'
-              />
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button variant='light'>{`请选择模型：${selectedModel}`}</Button>
-                </DropdownTrigger>
-                <DropdownMenu<Model>
-                  selectionMode='single'
-                  onAction={(key) => setSelectedModel(key as Model)}
-                >
-                  {models.map((key) => (
-                    <DropdownItem key={key}>{key}</DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
+            {submitResponse ? (
+              <>
+                <div className='flex justify-center items-center'>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='-rotate-90'
+                  />
+                  <Button
+                    variant='light'
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href =
+                        'data:image/png;base64,' + submitResponse.inpainted_img;
+                      link.download = '修复后.png';
+                      link.click();
+                    }}
+                  >
+                    保存图片
+                  </Button>
 
-              <Image
-                src='/assets/按键1.png'
-                width={48}
-                radius='none'
-                className='rotate-90'
-              />
-            </div>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='rotate-90'
+                  />
+                </div>
+                <div className='flex justify-center items-center'>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='-rotate-90'
+                  />
+                  <Button variant='light' onClick={() => setIsConfirmed(true)}>
+                    确认
+                  </Button>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='rotate-90'
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className='flex justify-center items-center'>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='-rotate-90'
+                  />
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button variant='light'>{`请选择模型：${selectedModel}`}</Button>
+                    </DropdownTrigger>
+                    <DropdownMenu<Model>
+                      selectionMode='single'
+                      onAction={(key) => setSelectedModel(key as Model)}
+                    >
+                      {models.map((key) => (
+                        <DropdownItem key={key}>{key}</DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
 
-            <div className='flex justify-center items-center'>
-              <Image
-                src='/assets/按键1.png'
-                width={48}
-                radius='none'
-                className='-rotate-90'
-              />
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='rotate-90'
+                  />
+                </div>
+                <div className='flex justify-center items-center'>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='-rotate-90'
+                  />
 
-              <Button
-                variant='light'
-                isLoading={isLoading}
-                onPress={() => {
-                  const current = stageRef.current;
-                  if (current === undefined) return;
-                  const canvas = current.clearAndToCanvas({
-                    pixelRatio: current._pixelRatio,
-                  });
-                  canvas.toBlob(async (blob: Blob) => {
-                    try {
-                      setIsLoading(true);
+                  <Button
+                    variant='light'
+                    isLoading={isLoading}
+                    onPress={() => {
+                      const current = stageRef.current;
+                      if (current === undefined) return;
+                      const canvas = current.clearAndToCanvas({
+                        pixelRatio: current._pixelRatio,
+                      });
+                      canvas.toBlob(async (blob: Blob) => {
+                        try {
+                          setIsLoading(true);
 
-                      const imgBase64 = await getImageBase64(url);
+                          const imgBase64 = await getImageBase64(url);
 
-                      const submitRequest: SubmitRequest = {
-                        model: selectedModel,
-                        img: imgBase64!,
-                        masked_img: await blobToBase64(blob),
-                      };
+                          const submitRequest: SubmitRequest = {
+                            model: selectedModel,
+                            img: imgBase64!,
+                            masked_img: await blobToBase64(blob),
+                          };
 
-                      const response = await axios.post<SubmitResponse>(
-                        'http://localhost:5000/api/submit',
-                        submitRequest
-                      );
+                          const response = await axios.post<SubmitResponse>(
+                            'http://localhost:5000/api/submit',
+                            submitRequest
+                          );
 
-                      setSubmitResponse(() => response.data);
-                    } catch (e) {
-                      console.log(e);
-                      alert(`提交失败 ${e}`);
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }, 'image/*');
-                }}
-              >
-                开始修复
-              </Button>
+                          setSubmitResponse(() => response.data);
+                        } catch (e) {
+                          console.log(e);
+                          alert(`提交失败 ${e}`);
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      }, 'image/*');
+                    }}
+                  >
+                    开始修复
+                  </Button>
 
-              <Image
-                src='/assets/按键1.png'
-                width={48}
-                radius='none'
-                className='rotate-90'
-              />
-            </div>
+                  <Image
+                    src='/assets/按键1.png'
+                    width={48}
+                    radius='none'
+                    className='rotate-90'
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
     </div>
   );
-}
-
-interface DoodleCanvasProps {
-  src: string;
 }
 
 enum Model {
@@ -189,15 +239,13 @@ interface SubmitResponse {
 }
 
 function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
-  console.log(submitResponse);
-
   return (
-    <Card>
-      <CardHeader>
-        <h4 className='font-medium text-large'>修复结果分析</h4>
-      </CardHeader>
-      <CardBody className='flex gap-8'>
-        <div className='flex gap-8 px-4'>
+    <div className='h-full flex flex-col items-center bg-gradient-to-r from-white via-blue-500 to-white'>
+      <h4 className='font-medium w-full text-2xl text-blue-800 p-8 font-serif'>
+        修复结果分析
+      </h4>
+      <section className='h-full flex flex-col gap-4 items-center justify-center container'>
+        <div className='flex justify-between gap-8 w-full px-4'>
           <div className='flex flex-col justify-center items-center gap-2'>
             <Image
               src={'data:image/png;base64,' + submitResponse.original_img}
@@ -231,16 +279,13 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
             </TableRow>
           </TableBody>
         </Table>
-      </CardBody>
-      <CardFooter>
         <Textarea
           isDisabled
           label='评估指标说明'
-          labelPlacement='outside'
           defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
         />
-      </CardFooter>
-    </Card>
+      </section>
+    </div>
   );
 }
 
