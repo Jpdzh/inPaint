@@ -1,6 +1,9 @@
 'use client';
 import {
   Button,
+  Card,
+  CardBody,
+  CardFooter,
   Code,
   Dropdown,
   DropdownItem,
@@ -17,7 +20,7 @@ import {
 } from '@nextui-org/react';
 import axios from 'axios';
 import { redirect, useSearchParams } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import ReactImageEditor from '../components/react-img-editor';
 
 export default function EditPage() {
@@ -56,6 +59,7 @@ export default function EditPage() {
             {submitResponse ? (
               <Image
                 src={'data:image/png;base64,' + submitResponse.inpainted_img}
+                width={256 * 1.5}
               />
             ) : (
               <ReactImageEditor
@@ -239,51 +243,86 @@ interface SubmitResponse {
 }
 
 function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
+  const classNames = useMemo(
+    () => ({
+      th: ['bg-transparent', 'text-default-200', 'border-b', 'border-divider'],
+      td: [
+        // changing the rows border radius
+        // first
+        'group-data-[first=true]/tr:first:before:rounded-none',
+        'group-data-[first=true]/tr:last:before:rounded-none',
+        // middle
+        'group-data-[middle=true]/tr:before:rounded-none',
+        // last
+        'group-data-[last=true]/tr:first:before:rounded-none',
+        'group-data-[last=true]/tr:last:before:rounded-none',
+      ],
+    }),
+    []
+  );
   return (
-    <div className='h-full flex flex-col items-center bg-gradient-to-r from-white via-blue-500 to-white'>
+    <div className='h-full flex flex-col items-center justify-center bg-gradient-to-r from-white via-blue-500 to-white'>
       <h4 className='font-medium w-full text-2xl text-blue-800 p-8 font-serif'>
         修复结果分析
       </h4>
       <section className='h-full flex flex-col gap-4 items-center justify-center container'>
-        <div className='flex justify-between gap-8 w-full px-4'>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            <Image
-              src={'data:image/png;base64,' + submitResponse.original_img}
+        <Card className='border-none bg-transparent'>
+          <CardBody>
+            <div className='flex justify-center items-center gap-12 w-full px-4'>
+              <div className='flex flex-col justify-center items-center gap-2'>
+                <Image
+                  src={'data:image/png;base64,' + submitResponse.original_img}
+                  width={256 * 1.5}
+                />
+                <Code>原图</Code>
+              </div>
+              <div className='flex flex-col justify-center items-center gap-2'>
+                <Image
+                  src={'data:image/png;base64,' + submitResponse.masked_img}
+                  width={256 * 1.5}
+                />
+                <Code color='warning'>编辑后</Code>
+              </div>
+              <div className='flex flex-col justify-center items-center gap-2'>
+                <Image
+                  src={'data:image/png;base64,' + submitResponse.inpainted_img}
+                  width={256 * 1.5}
+                />
+                <Code color='success'>修复后</Code>
+              </div>
+            </div>
+            <div>
+              <Table
+                aria-label='result table'
+                removeWrapper
+                classNames={classNames}
+              >
+                <TableHeader>
+                  <TableColumn>模型名称</TableColumn>
+                  <TableColumn>SSIM</TableColumn>
+                  <TableColumn>PSNR</TableColumn>
+                  <TableColumn>LPIPS</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  <TableRow key='1'>
+                    <TableCell>{submitResponse.model}</TableCell>
+                    <TableCell>{submitResponse.ssmi}</TableCell>
+                    <TableCell>{submitResponse.psnr}</TableCell>
+                    <TableCell>{submitResponse.lpips}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardBody>
+          <CardFooter>
+            <Textarea
+              isDisabled
+              label='评估指标说明'
+              fullWidth
+              defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
             />
-            <Code>原图</Code>
-          </div>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            <Image src={'data:image/png;base64,' + submitResponse.masked_img} />
-            <Code color='secondary'>编辑后</Code>
-          </div>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            <Image
-              src={'data:image/png;base64,' + submitResponse.inpainted_img}
-            />
-            <Code color='success'>修复后</Code>
-          </div>
-        </div>
-        <Table aria-label='result table'>
-          <TableHeader>
-            <TableColumn>模型名称</TableColumn>
-            <TableColumn>SSIM</TableColumn>
-            <TableColumn>PSNR</TableColumn>
-            <TableColumn>LPIPS</TableColumn>
-          </TableHeader>
-          <TableBody>
-            <TableRow key='1'>
-              <TableCell>{submitResponse.model}</TableCell>
-              <TableCell>{submitResponse.ssmi}</TableCell>
-              <TableCell>{submitResponse.psnr}</TableCell>
-              <TableCell>{submitResponse.lpips}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Textarea
-          isDisabled
-          label='评估指标说明'
-          defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
-        />
+          </CardFooter>
+        </Card>
       </section>
     </div>
   );
