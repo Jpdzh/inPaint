@@ -99,7 +99,7 @@ export default function EditPage() {
                       link.click();
                     }}
                   >
-                    保存图片
+                    Save the Image
                   </Button>
 
                   <Image
@@ -117,7 +117,7 @@ export default function EditPage() {
                     className='-rotate-90'
                   />
                   <Button variant='light' onClick={() => setIsConfirmed(true)}>
-                    确认
+                    Confirm
                   </Button>
                   <Image
                     src='/assets/按键1.png'
@@ -138,7 +138,7 @@ export default function EditPage() {
                   />
                   <Dropdown>
                     <DropdownTrigger>
-                      <Button variant='light'>{`请选择模型：${selectedModel}`}</Button>
+                      <Button variant='light'>{`Select a Model: ${selectedModel}`}</Button>
                     </DropdownTrigger>
                     <DropdownMenu<Model>
                       selectionMode='single'
@@ -194,14 +194,14 @@ export default function EditPage() {
                           setSubmitResponse(() => response.data);
                         } catch (e) {
                           console.log(e);
-                          alert(`提交失败 ${e}`);
+                          alert(`Error: ${e}`);
                         } finally {
                           setIsLoading(false);
                         }
                       }, 'image/*');
                     }}
                   >
-                    开始修复
+                    Start Restoration
                   </Button>
 
                   <Image
@@ -263,7 +263,7 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
   return (
     <div className='h-full flex flex-col items-center justify-center bg-gradient-to-r from-white via-blue-500 to-white'>
       <h4 className='font-medium w-full text-2xl text-blue-800 p-8 font-serif'>
-        修复结果分析
+        Restoration Result Analysis
       </h4>
       <section className='h-full flex flex-col gap-4 items-center justify-center container'>
         <Card className='border-none bg-transparent'>
@@ -274,21 +274,21 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
                   src={'data:image/png;base64,' + submitResponse.original_img}
                   width={256 * 1.5}
                 />
-                <Code>原图</Code>
+                <Code>Original Image</Code>
               </div>
               <div className='flex flex-col justify-center items-center gap-2'>
                 <Image
                   src={'data:image/png;base64,' + submitResponse.masked_img}
                   width={256 * 1.5}
                 />
-                <Code color='warning'>编辑后</Code>
+                <Code color='warning'>After Editing</Code>
               </div>
               <div className='flex flex-col justify-center items-center gap-2'>
                 <Image
                   src={'data:image/png;base64,' + submitResponse.inpainted_img}
                   width={256 * 1.5}
                 />
-                <Code color='success'>修复后</Code>
+                <Code color='success'>After Restoration</Code>
               </div>
             </div>
             <div>
@@ -298,7 +298,7 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
                 classNames={classNames}
               >
                 <TableHeader>
-                  <TableColumn>模型名称</TableColumn>
+                  <TableColumn>Model Name</TableColumn>
                   <TableColumn>SSIM</TableColumn>
                   <TableColumn>PSNR</TableColumn>
                   <TableColumn>LPIPS</TableColumn>
@@ -317,9 +317,9 @@ function ResultView({ submitResponse }: { submitResponse: SubmitResponse }) {
           <CardFooter>
             <Textarea
               isDisabled
-              label='评估指标说明'
+              label='Evaluation Metrics Explanation'
               fullWidth
-              defaultValue='SSIM (Structural Similarity Index)：结构相似性指数，通过比较图像的结构信息和亮度信息来评估两张图像之间的相似度。PSNR (Peak Signal to Noise Ratio)：峰值信噪比，通过计算图像的均方误差（MSE）来衡量两张图像之间的差异度，然后将 MSE 转换为对数尺度。LPIPS (Learned Perceptual Image Patch Similarity)：学习感知图像块相似度，通过预训练神经网络模型提取图像的高级特征，并比较这些特征的差异，从而更准确地反映人类的视觉感知。'
+              defaultValue='SSIM: Structural Similarity Index, which assesses the similarity between two images by comparing their structural information and luminance information. PSNR: Peak Signal to Noise Ratio, which measures the difference between two images by calculating the mean squared error (MSE) and converting the MSE to a logarithmic scale. LPIPS: Learned Perceptual Image Patch Similarity, which uses a pre-trained neural network to extract high-level features of images. By comparing these features, it can more accurately reflect human visual perception.'
             />
           </CardFooter>
         </Card>

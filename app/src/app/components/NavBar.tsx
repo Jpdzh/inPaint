@@ -1,15 +1,14 @@
 'use client';
 
 import {
+  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
 } from '@nextui-org/react';
-import { ThemeChanger } from '../ThemeChanger';
-import { usePathname } from 'next/navigation';
 import NextLink from 'next/link';
+import { ThemeChanger } from '../ThemeChanger';
 
 export default function NavBar() {
   return (
@@ -26,19 +25,16 @@ export default function NavBar() {
           className='flex items-start flex-col dark'
           color='foreground'
         >
-          <p className='text-4xl font-extrabold font-serif'>青花瓷盘</p>
+          <p className='text-4xl font-extrabold font-serif'>
+            Blue and White Porcelain Plate
+          </p>
           <p className='text-2xl font-extrabold font-serif'>
-            　　图像修复可视化系统
+            　　Image Restoration Visualization System
           </p>
         </Link>
       </NavbarBrand>
 
       <NavbarContent justify='end'>
-        <NavbarItem>
-          {/* <Link href='/result' as={NextLink} isBlock>
-            我的文件
-          </Link> */}
-        </NavbarItem>
         <NavbarItem>
           <ThemeChanger />
         </NavbarItem>

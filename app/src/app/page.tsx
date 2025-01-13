@@ -1,9 +1,9 @@
 'use client';
 
 import { Button, Divider, Image } from '@nextui-org/react';
-import { useRef, useState } from 'react';
 import { UploadIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRef, useState } from 'react';
 
 function SectionOne() {
   return (
@@ -22,7 +22,7 @@ function SectionOne() {
             className='-rotate-90'
           />
           <p className='font-serif font-bold text-4xl text-nowrap'>
-            人工智能数字化修复
+            Artificial Intelligence Digital Restoration
           </p>
 
           <Image
@@ -34,9 +34,14 @@ function SectionOne() {
         </div>
 
         <p className='w-[80%] font-serif'>
-          　　随着深度学习算法的发展，我们探索了将深度学习技术应用于陶瓷修复领域的可能性，并制作了本瓷盘纹样修复系统。本系统能将用户上传的图像通过深度学习算法中的如
-          DDPM（Denosing Diffusion Probabilistic
-          Models）对图像进行修复，并展示修复前后的对比图。通过该算法的应用，能够显著提高文物修复效率和质量，减轻修复工作的压力。
+          　　With the development of deep learning algorithms, we have explored
+          the possibility of applying deep learning technology to the field of
+          ceramic restoration and have developed a porcelain pattern restoration
+          system. This system can repair images uploaded by users through the
+          DDPM algorithm in deep learning and display the comparison between the
+          before and after restoration. The application of this algorithm can
+          significantly improve the efficiency and quality of cultural relic
+          restoration and reduce the pressure of restoration work.
         </p>
       </div>
     </div>
@@ -55,7 +60,7 @@ function SectionTwo() {
             className='-rotate-90'
           />
           <p className='font-serif font-bold text-4xl text-nowrap'>
-            传统手工修复
+            Traditional Manual Restoration
           </p>
 
           <Image
@@ -67,7 +72,13 @@ function SectionTwo() {
         </div>
 
         <p className='w-[80%] font-serif'>
-          　　瓷器材料的易碎导致许多瓷器上的精美图案发生破损，失去了原本的艺术精髓和美学价值。传统的人工修复瓷器是一项复杂且精细的工作，需要专业人员评估破损情况、清洁处理、接合和填补缺损等流程，技术含量高且修复难度大。
+          　　The fragility of porcelain materials leads to the damage of many
+          exquisite patterns on porcelain, causing them to lose their original
+          artistic essence and aesthetic value. Traditional manual restoration
+          of porcelain is a complex and delicate task that requires
+          professionals to assess the damage, clean, join, and fill in the
+          missing parts. This process is highly technical and challenge to
+          perform.
         </p>
       </div>
       <Image
@@ -134,7 +145,7 @@ function UploadPage() {
             removeWrapper
           />
         ) : (
-          <p>暂未选择图片</p>
+          <p>No Selected Image</p>
         )}
       </div>
       <div className='flex flex-col gap-36'>
@@ -150,7 +161,7 @@ function UploadPage() {
             endContent={<UploadIcon size={16} />}
             onPress={handleButtonClick}
           >
-            请选择图片
+            Please Select an Image
           </Button>
           <Image
             src='/assets/按键1.png'
@@ -183,7 +194,7 @@ function UploadPage() {
               selectedImage ? URL.createObjectURL(selectedImage) : ''
             }`}
           >
-            确认
+            Confirm
           </Button>
 
           <Image
